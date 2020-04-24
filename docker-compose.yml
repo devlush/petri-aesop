@@ -1,0 +1,38 @@
+version: '3.1'
+
+services:
+
+  db:
+    image: postgres:12.2-alpine
+    environment:
+      POSTGRES_DB: razor_prd
+      POSTGRES_USER: razor
+      POSTGRES_PASSWORD: coulomb
+    networks:
+      - endo
+
+  adminer:
+    image: adminer:4.7.6
+    ports:
+      - 8080:8080
+    networks:
+      - endo
+
+  razorpup:
+    build:
+      context: ./razor
+      args:
+        DB_URL: 'jdbc:postgresql://db/razor_prd?user=razor&password=coulomb'
+    environment:
+      POLL_SOCKET: 'db 5432'
+    env_file:
+      - razor/runtime.env
+    hostname: razorpup
+    networks:
+      - endo
+      - pxeboot
+
+networks:
+  endo:
+  pxeboot:
+
