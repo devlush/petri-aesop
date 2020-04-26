@@ -18,7 +18,7 @@ services:
     networks:
       - endo
 
-  razorpup:
+  razor:
     build:
       context: ./razor
       args:
@@ -27,7 +27,7 @@ services:
       POLL_SOCKET: 'db 5432'
     env_file:
       - razor/runtime.env
-    hostname: razorpup
+    hostname: razor
     networks:
       - endo
       - pxeboot
