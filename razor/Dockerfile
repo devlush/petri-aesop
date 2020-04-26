@@ -4,26 +4,27 @@ FROM centos:7.7.1908
 RUN set -x \
         && cd $(mktemp -d) \
         && curl -sO http://yum.puppetlabs.com/puppetlabs-release-pc1-el-7.noarch.rpm \
-        && sha256sum puppetlabs-release-pc1-el-7.noarch.rpm | cut -d' ' -f1 \
-          | xargs -I % test '%' == '2e06d973a73fc3003f6305896fe9575f8bc8d471c0a110a86a7d977e2888cf52' \
-        && yum -y -q install ./*.rpm \
+        && printf '%s  %s' 2e06d973a73fc3003f6305896fe9575f8bc8d471c0a110a86a7d977e2888cf52 \
+                             ./puppetlabs-release-pc1-el-7.noarch.rpm | sha256sum -c \
+        && yum -y -q install ./puppetlabs-release-pc1-el-7.noarch.rpm \
         \
-        && sha256sum /etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs-PC1 | cut -d' ' -f1 \
-          | xargs -I % test '%' == 'a2a6ac449c6c0cb2e821d7f5bd12002820de4a5da73202233159ef9f5354436e' \
-        && sha256sum /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet-PC1 | cut -d' ' -f1 \
-          | xargs -I % test '%' == '229d53569fb16ea1de72e6e478cc5e64acc19bd592df4dbe321ce98561704723' \
+        && printf '%s  %s' a2a6ac449c6c0cb2e821d7f5bd12002820de4a5da73202233159ef9f5354436e \
+                        /etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs-PC1 | sha256sum -c \
+        && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs-PC1 \
+        \
+        && printf '%s  %s' 229d53569fb16ea1de72e6e478cc5e64acc19bd592df4dbe321ce98561704723 \
+                        /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet-PC1 | sha256sum -c \
+        && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet-PC1 \
         \
         && yum -y -q install centos-release-scl-rh centos-release-scl \
         \
-        && sha256sum /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 | cut -d' ' -f1 \
-          | xargs -I % test '%' == '8b48b04b336bd725b9e611c441c65456a4168083c4febc28e88828d8ec14827f' \
-        && sha256sum /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo | cut -d' ' -f1 \
-          | xargs -I % test '%' == 'db1ce0b0a5eea629a3e272934e382764c63c54e8d0f2f267d88cba86eb803b27' \
-        \
-        && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puppetlabs-PC1 \
-        && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-puppet-PC1 \
-        && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
+        && printf '%s  %s' db1ce0b0a5eea629a3e272934e382764c63c54e8d0f2f267d88cba86eb803b27 \
+                        /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo | sha256sum -c \
         && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-SIG-SCLo \
+        \
+        && printf '%s  %s' 8b48b04b336bd725b9e611c441c65456a4168083c4febc28e88828d8ec14827f \
+                        /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 | sha256sum -c \
+        && rpm --import /etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7 \
         \
         && yum -y -q install sudo \
         \
