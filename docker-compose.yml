@@ -1,3 +1,4 @@
+
 version: '3.1'
 
 services:
@@ -29,10 +30,23 @@ services:
       - razor/runtime.env
     hostname: razor
     networks:
-      - endo
-      - pxeboot
+      endo:
+      pxeboot:
+        ipv4_address: 192.168.8.19
+
+  trinity:
+    build: ./trinity
+    depends_on:
+      - razor
+    cap_add:
+      - NET_ADMIN
+    networks:
+      pxeboot:
+        ipv4_address: 192.168.8.20
 
 networks:
   endo:
   pxeboot:
+    external:
+      name: pxeboot
 

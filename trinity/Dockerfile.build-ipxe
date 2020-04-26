@@ -1,0 +1,21 @@
+
+FROM alpine:3.11
+
+ADD https://github.com/ipxe/ipxe/archive/v1.20.1.tar.gz /hardhat/
+RUN set -x \
+    && printf '%s  %s' 51ffb78f5b2888226bc508a09ac401ceb32389464d816122f1416511e3cf0bd8 \
+        /hardhat/v1.20.1.tar.gz | sha256sum -c \
+    \
+    && apk --no-cache add gcc make perl libc-dev xz-dev mtools xorriso syslinux \
+    \
+    && cd /hardhat \
+    && tar -xf v1.20.1.tar.gz \
+    && cd ipxe-1.20.1/src \
+    \
+    && make bin/undionly.kpxe \
+    && make bin-x86_64-efi/ipxe.efi \
+    \
+    && mkdir -p /hardhat/build_artifacts \
+    && cp bin/undionly.kpxe /hardhat/build_artifacts \
+    && cp bin-x86_64-efi/ipxe.efi /hardhat/build_artifacts
+

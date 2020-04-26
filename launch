@@ -1,0 +1,21 @@
+#!/bin/sh
+
+echo Creating pxeboot external bridge ...
+
+docker network create \
+        --internal \
+        --attachable \
+        --driver 'bridge' \
+        --subnet '192.168.8.0/24' \
+        --ip-range '192.168.8.0/28' \
+        --opt 'com.docker.network.bridge.name=br-pxeboot' \
+        pxeboot
+
+brctl addif br-pxeboot em1
+
+echo Launching Docker compose cluster ...
+docker-compose up
+
+echo Removing pxeboot external bridge ...
+docker network rm pxeboot
+
