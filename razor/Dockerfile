@@ -58,10 +58,14 @@ ADD pollsocket.sh /usr/local/bin/
 ADD entrypoint.sh /usr/local/bin/
 RUN /usr/local/bin/entrypoint.sh
 
+ADD https://s3-us-west-2.amazonaws.com/razor-releases/microkernel-009.tar /opt/puppetlabs/server/data/razor-server/repo/
+RUN set -x \
+    && cd /opt/puppetlabs/server/data/razor-server/repo \
+    && tar -xf microkernel-009.tar
+
 USER razor
 
 #ADD deps/microkernel-009.tar /opt/puppetlabs/server/data/razor-server/repo/
-ADD https://s3-us-west-2.amazonaws.com/razor-releases/microkernel-009.tar /opt/puppetlabs/server/data/razor-server/repo/
 RUN set -x \
     && cd /opt/puppetlabs/server/data/razor-server/repo/microkernel \
     && printf '%s  %s' 8664a4560115f9687ae071f6758734f90d7b9a5bd770783621b9ffdb8e84ce40 \
