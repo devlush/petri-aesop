@@ -12,6 +12,7 @@ docker network create \
         pxeboot
 
 brctl addif br-pxeboot em1
+ip link set em1 up
 
 echo Launching Docker compose cluster ...
 docker-compose up
