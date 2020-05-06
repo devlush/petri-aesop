@@ -60,6 +60,15 @@ RUN /usr/local/bin/entrypoint.sh
 
 USER razor
 
+#ADD deps/microkernel-009.tar /opt/puppetlabs/server/data/razor-server/repo/
+ADD https://s3-us-west-2.amazonaws.com/razor-releases/microkernel-009.tar /opt/puppetlabs/server/data/razor-server/repo/
+RUN set -x \
+    && cd /opt/puppetlabs/server/data/razor-server/repo/microkernel \
+    && printf '%s  %s' 8664a4560115f9687ae071f6758734f90d7b9a5bd770783621b9ffdb8e84ce40 \
+        initrd0.img | sha256sum -c \
+    && printf '%s  %s' 1821d150ca2244fe1a0e8b0d69e8126670b08d7cc1c52139bcf47fc41a2effd0 \
+        vmlinuz0 | sha256sum -c
+
 CMD pollsocket.sh ${POLL_SOCKET} \
     && /opt/puppetlabs/bin/razor-admin -e production migrate-database \
     && /opt/puppetlabs/server/apps/razor-server/share/torquebox/jboss/bin/standalone.sh \
