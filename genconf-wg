@@ -13,7 +13,7 @@ raapp_wg_pubkey="$(echo -n $raapp_wg_privkey | wg pubkey)"
 
 echo "[+] Generating wireguard config files."
 mkdir -p ./wg-razor
-mkdir -p ./wg-razor
+mkdir -p ./wg-raapp
 
 cat > ./wg-razor/wg0.conf <<_EOF
 [Interface]
