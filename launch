@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source ./deploy.conf
+
 echo Creating pxeboot external bridge ...
 
 docker network create \
@@ -11,8 +13,13 @@ docker network create \
         --opt 'com.docker.network.bridge.name=br-pxeboot' \
         pxeboot
 
-brctl addif br-pxeboot em1
-ip link set em1 up
+echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
+
+echo Creating vxlan adapter ...
+ip link add vx0 type vxlan id 100 remote $raapp_wg_tun_ip dstport 4789
+
+brctl addif br-pxeboot vx0
+ip link set vx0 up
 
 echo Launching Docker compose cluster ...
 docker-compose up
