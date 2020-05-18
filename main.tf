@@ -43,7 +43,7 @@ resource "aws_security_group" "vpn_ep" {
   description = "public vpn endpoint, secure network access"
   vpc_id = aws_vpc.aesop.id
 
-  # whitelist client ssh access
+  # allow wiregaurd connections from anywhere
   ingress {
     from_port   = 29604
     to_port     = 29604
