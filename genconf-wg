@@ -1,0 +1,46 @@
+#!/bin/bash
+
+source ./deploy.conf
+
+set -e
+
+echo "[+] Generating wireguard private keys."
+razor_wg_privkey="$(wg genkey)"
+razor_wg_pubkey="$(echo -n $razor_wg_privkey | wg pubkey)"
+
+raapp_wg_privkey="$(wg genkey)"
+raapp_wg_pubkey="$(echo -n $raapp_wg_privkey | wg pubkey)"
+
+echo "[+] Generating wireguard config files."
+mkdir -p ./wg-razor
+mkdir -p ./wg-razor
+
+cat > ./wg-razor/wg0.conf <<_EOF
+[Interface]
+#PublicKey = $razor_wg_pubkey
+PrivateKey = $razor_wg_privkey
+Address = $razor_wg_tun_ip/$subnet_wg_tun_prefix
+ListenPort = $razor_wg_listen_port
+
+[Peer]
+## remote access appliance
+PublicKey = $raapp_wg_pubkey
+AllowedIPs = $raapp_wg_tun_ip/32
+
+_EOF
+
+cat > ./wg-raapp/wg0.conf <<_EOF
+[Interface]
+#PublicKey = $raapp_wg_pubkey
+PrivateKey = $raapp_wg_privkey
+Address = $raapp_wg_tun_ip/$subnet_wg_tun_prefix
+
+[Peer]
+## razor server
+PublicKey = $razor_wg_pubkey
+AllowedIPs = $razor_wg_tun_ip/32
+Endpoint = $razor_wg_wan_ip:$razor_wg_listen_port
+PersistentKeepalive = 0
+
+_EOF
+
