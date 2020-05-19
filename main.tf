@@ -11,6 +11,10 @@ resource "aws_vpc" "aesop" {
 
 resource "aws_internet_gateway" "aesop" {
   vpc_id = aws_vpc.aesop.id
+
+  tags = {
+    Name = "aesop"
+  }
 }
 
 resource "aws_route" "internet_access" {
