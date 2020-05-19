@@ -11,6 +11,16 @@ resource "aws_vpc" "aesop" {
 
 resource "aws_internet_gateway" "aesop" {
   vpc_id = aws_vpc.aesop.id
+
+  tags = {
+    Name = "aesop"
+  }
+}
+
+resource "aws_route" "internet_access" {
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id        = aws_internet_gateway.aesop.id
+  route_table_id    = aws_vpc.aesop.main_route_table_id
 }
 
 resource "aws_subnet" "exo" {
@@ -19,7 +29,7 @@ resource "aws_subnet" "exo" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "exo-aesop"
+    Name = "exo_aesop"
   }
 }
 
@@ -48,7 +58,7 @@ resource "aws_security_group" "vpn_ep" {
     from_port   = 29604
     to_port     = 29604
     protocol    = "udp"
-    cidr_blocks = [ "0.0.0.0/0", "::/0" ]
+    cidr_blocks = [ "0.0.0.0/0" ]
     description = "wireguard"
   }
 }
