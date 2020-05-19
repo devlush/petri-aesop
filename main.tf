@@ -13,6 +13,12 @@ resource "aws_internet_gateway" "aesop" {
   vpc_id = aws_vpc.aesop.id
 }
 
+resource "aws_route" "internet_access" {
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id        = aws_internet_gateway.aesop.id
+  route_table_id    = aws_vpc.aesop.main_route_table_id
+}
+
 resource "aws_subnet" "exo" {
   vpc_id = aws_vpc.aesop.id
   cidr_block = "10.70.0.0/24"
