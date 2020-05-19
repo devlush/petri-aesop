@@ -19,7 +19,7 @@ resource "aws_subnet" "exo" {
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "exo-aesop"
+    Name = "exo_aesop"
   }
 }
 
@@ -48,7 +48,7 @@ resource "aws_security_group" "vpn_ep" {
     from_port   = 29604
     to_port     = 29604
     protocol    = "udp"
-    cidr_blocks = [ "0.0.0.0/0", "::/0" ]
+    cidr_blocks = [ "0.0.0.0/0" ]
     description = "wireguard"
   }
 }
